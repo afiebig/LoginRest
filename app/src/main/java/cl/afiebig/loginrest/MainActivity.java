@@ -25,12 +25,15 @@ public class MainActivity extends ActionBarActivity {
     private String jsonResponse;
     private  JsonObjectRequest jsonReq;
 
-    private TextView txtResponse;
+    private TextView textResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textResult = (TextView)findViewById(R.id.Resultado_Login);
+        textResult.setText("Hola Mundo");
     }
 
     @Override
@@ -56,23 +59,29 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public boolean AtempLogin (View view){
+        textResult = (TextView)findViewById(R.id.Resultado_Login);
+        textResult.setText("Generando Request JSON");
+
         makeJsonObjectRequest("Valdivia","123");
         return true;
     }
 
     private String makeJsonObjectRequest(String user, String pass) {
-
+        textResult = (TextView)findViewById(R.id.Resultado_Login);
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("username",user);
         params.put("password",pass);
         urlJsonLogin = urlJsonLogin + "?username=" + user + "&password=" + pass;
 
+        textResult.setText("Creando Objeto JSON");
+
         jsonReq = new JsonObjectRequest(Request.Method.POST,
                 urlJsonLogin, null, new Response.Listener<JSONObject>() {
 
+
+
             public void onResponse(JSONObject response) {
                 // Log.d(TAG, response.toString());
-
                 try {
                     // Parsing json object response
                     String login = response.getString("login");
@@ -85,15 +94,14 @@ public class MainActivity extends ActionBarActivity {
                     jsonResponse = "";
                     jsonResponse += "login: " + login + "\n\n";
                     jsonResponse += "permissions: " + permissions + "\n\n";
-                    jsonResponse += "access_token: " + access_token + "\n\n";
-                    jsonResponse += "expires_in: " + expires_in + "\n\n";
+                    //jsonResponse += "access_token: " + access_token + "\n\n";
+                    //jsonResponse += "expires_in: " + expires_in + "\n\n";
                     jsonResponse += "refresh_token: " + refresh_token + "\n\n";
 
-                    txtResponse.setText(jsonResponse);
+                    textResult.setText(jsonResponse);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    jsonResponse = "Acceso Denegado Favor Revise sus credenciales";
                 }
             }
         }, new Response.ErrorListener() {
@@ -101,7 +109,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // VolleyLog.d(TAG, "Error: " + error.getMessage());
-                jsonResponse = "Acceso Denegado Favor Revise sus credenciales";
+                jsonResponse = "Acceso Denegado Favor Revise sus credenciales 2";
             }
         });
 
