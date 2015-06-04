@@ -60,9 +60,10 @@ public class MainActivity extends ActionBarActivity {
 
     public boolean AtempLogin (View view){
         textResult = (TextView)findViewById(R.id.Resultado_Login);
-        textResult.setText("Generando Request JSON");
 
-        makeJsonObjectRequest("Valdivia","123");
+        textResult.setText("Generando Request JSON");
+        String result = makeJsonObjectRequest("Valdivia","123");
+        textResult.setText("Generando Request JSON "+result);
         return true;
     }
 
