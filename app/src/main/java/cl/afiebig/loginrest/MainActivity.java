@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
                     Toast.makeText(getApplicationContext(),
                             "Error: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
-                    textResult.setText("ERROR 01 " + "Error: " + e.getMessage());
+                    textResult.setText("ERROR 01 --> " + "Error: " + e.getMessage());
                 }
             }
         }, new Response.ErrorListener() {
@@ -163,10 +163,11 @@ public class MainActivity extends Activity {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
-                textResult.setText("ERROR 02 "+ "Error: " + error.getMessage());
+                textResult.setText("ERROR 02 --> "+ "Error: " + error.getMessage());
             }
         });
     //Adding request to request queque
+        urlJsonLogin = "http://www.ingvaldiviavivar.com/api/login";
         MainActivity.getInstance().addToRequestQueue(jsonObjReq);
     }
 }
