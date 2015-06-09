@@ -134,19 +134,20 @@ public class MainActivity extends Activity {
                     //Parsing json object response
                     //response will be json Object
                     String login = response.getString("login");
-                    String permissions = response.getString("permissions");
-                    String access_token = response.getString("access_token");
-                    String expires_in = response.getString("expires_in");
-                    String refresh_token = response.getString("refresh_token");
+                   //String permissions = response.getString("permissions");
+                    //String access_token = response.getString("access_token");
+                   // String expires_in = response.getString("expires_in");
+                   // String refresh_token = response.getString("refresh_token");
 
                     jsonResponse = "";
                     jsonResponse += "login: " + login + "\n\n";
-                    jsonResponse += "permissions: " + permissions + "\n\n";
-                    jsonResponse += "access_token: " + access_token + "\n\n";
-                    jsonResponse += "expires_in: " + expires_in + "\n\n";
-                    jsonResponse += "refresh_token: " + refresh_token + "\n\n";
+                    //jsonResponse += "permissions: " + permissions + "\n\n";
+                    //jsonResponse += "access_token: " + access_token + "\n\n";
+                    //jsonResponse += "expires_in: " + expires_in + "\n\n";
+                    //jsonResponse += "refresh_token: " + refresh_token + "\n\n";
 
                     textResult.setText(jsonResponse);
+                    //Nueva Vista.
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -154,20 +155,22 @@ public class MainActivity extends Activity {
                             "Error: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
                     textResult.setText("ERROR 01 --> " + "Error: " + e.getMessage());
+                    //APAGA PANTALLA CARGANDO
                 }
             }
         }, new Response.ErrorListener() {
-
             @Override
             public void onErrorResponse (VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
                 textResult.setText("ERROR 02 --> "+ "Error: " + error.getMessage());
+                //APAGA PANTALLA CARGANDO
+                //Setea Mensaje Error
             }
         });
-    //Adding request to request queque
-        urlJsonLogin = "http://www.ingvaldiviavivar.com/api/login";
+        //Adding request to request queque
         MainActivity.getInstance().addToRequestQueue(jsonObjReq);
+        urlJsonLogin = "http://www.ingvaldiviavivar.com/api/login";
     }
 }
