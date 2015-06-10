@@ -1,13 +1,16 @@
 package cl.afiebig.loginrest;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,18 +27,19 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-
-
 public class MainActivity extends Activity {
 
     //URL LOGIN JSON
     private String urlJsonLogin = "http://www.ingvaldiviavivar.com/api/login";
 
+    public final static String ACCESS_TOKEN = "com.mycompany.myfirstapp.MESSAGE";
+
     private String jsonResponse;
-    private  JsonObjectRequest jsonReq;
 
     private TextView textResult;
+
+    ProgressDialog progress;
+
 
     private static MainActivity mInstance;
 
@@ -47,9 +51,11 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mInstance = this;
+        progress = new ProgressDialog(this);
+        progress.setTitle("Login In");
+        progress.setMessage("Wait while login...");
 
         textResult = (TextView)findViewById(R.id.Resultado_Login);
-        textResult.setText("Hola Mundo");
     }
 
     public static synchronized MainActivity getInstance() {
@@ -66,20 +72,9 @@ public class MainActivity extends Activity {
         return mRequestQueue;
     }
 
-    public <T> void addToRequestQueue(Request<T> req, String tag) {
-        req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
-        getRequestQueue().add(req);
-    }
-
     public <T> void addToRequestQueue(Request<T> req) {
         req.setTag(TAG);
         getRequestQueue().add(req);
-    }
-
-    public void cancelPendingRequests(Object tag) {
-        if (mRequestQueue != null) {
-            mRequestQueue.cancelAll(tag);
-        }
     }
 
     @Override
@@ -109,19 +104,19 @@ public class MainActivity extends Activity {
         String login = ((EditText)findViewById(R.id.email)).getText().toString();
         String pass = ((EditText)findViewById(R.id.password)).getText().toString();
         textResult.setText("Generando Request JSON");
+        progress.show();
         makeJsonObjectRequest(login, pass);
-        textResult.setText("Listo" );
         return true;
     }
 
     private void makeJsonObjectRequest(String user, String pass) {
 
-        HashMap<String, String> params = new HashMap<String, String>();
+       /* HashMap<String, String> params = new HashMap<String, String>();
         params.put("username",user);
-        params.put("password",pass);
+        params.put("password",pass);*/
         urlJsonLogin = urlJsonLogin + "?username=" + user + "&password=" + pass;
 
-        textResult.setText("Creando Objeto JSON");
+        //textResult.setText("Creando Objeto JSON");
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Method.POST,
                 urlJsonLogin, null, new Response.Listener<JSONObject>() {
@@ -134,28 +129,34 @@ public class MainActivity extends Activity {
                     //Parsing json object response
                     //response will be json Object
                     String login = response.getString("login");
-                   //String permissions = response.getString("permissions");
-                    //String access_token = response.getString("access_token");
-                   // String expires_in = response.getString("expires_in");
-                   // String refresh_token = response.getString("refresh_token");
+                    String permissions = response.getString("permissions");
+                    String access_token = response.getString("access_token");
+                    String expires_in = response.getString("expires_in");
+                    String refresh_token = response.getString("refresh_token");
 
                     jsonResponse = "";
                     jsonResponse += "login: " + login + "\n\n";
-                    //jsonResponse += "permissions: " + permissions + "\n\n";
-                    //jsonResponse += "access_token: " + access_token + "\n\n";
-                    //jsonResponse += "expires_in: " + expires_in + "\n\n";
-                    //jsonResponse += "refresh_token: " + refresh_token + "\n\n";
+                    jsonResponse += "permissions: " + permissions + "\n\n";
+                    jsonResponse += "access_token: " + access_token + "\n\n";
+                    jsonResponse += "expires_in: " + expires_in + "\n\n";
+                    jsonResponse += "refresh_token: " + refresh_token + "\n\n";
 
+
+                    progress.dismiss();
                     textResult.setText(jsonResponse);
                     //Nueva Vista.
+                    Intent intent = new Intent(mInstance, ListItems.class);
+                    intent.putExtra(ACCESS_TOKEN, access_token);
+                    startActivity(intent);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(),
                             "Error: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
-                    textResult.setText("ERROR 01 --> " + "Error: " + e.getMessage());
-                    //APAGA PANTALLA CARGANDO
+                    progress.dismiss();
+                    textResult.setTextColor(Color.RED);
+                    textResult.setText("Error, please check your username/password");
                 }
             }
         }, new Response.ErrorListener() {
@@ -164,13 +165,17 @@ public class MainActivity extends Activity {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
-                textResult.setText("ERROR 02 --> "+ "Error: " + error.getMessage());
-                //APAGA PANTALLA CARGANDO
+                //textResult.setText("ERROR 02 --> " + "Error: " + error.getMessage());
+                // To dismiss the dialog
+                progress.dismiss();
                 //Setea Mensaje Error
+                textResult.setTextColor(Color.RED);
+                textResult.setText("Error, please check your username/password");
             }
         });
         //Adding request to request queque
         MainActivity.getInstance().addToRequestQueue(jsonObjReq);
         urlJsonLogin = "http://www.ingvaldiviavivar.com/api/login";
+        textResult.setTextColor(Color.BLACK);
     }
 }
