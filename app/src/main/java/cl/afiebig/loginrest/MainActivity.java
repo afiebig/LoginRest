@@ -27,10 +27,12 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 public class MainActivity extends Activity {
 
     //URL LOGIN JSON
-    private String urlJsonLogin = "http://www.ingvaldiviavivar.com/api/login";
+    private String urlJsonLogin = "http://gestorcontable.ingvaldiviavivar.com/api/login";
 
     public final static String ACCESS_TOKEN = "com.mycompany.myfirstapp.MESSAGE";
 
@@ -111,14 +113,9 @@ public class MainActivity extends Activity {
 
     private void makeJsonObjectRequest(String user, String pass) {
 
-       /* HashMap<String, String> params = new HashMap<String, String>();
-        params.put("username",user);
-        params.put("password",pass);*/
         urlJsonLogin = urlJsonLogin + "?username=" + user + "&password=" + pass;
 
-        //textResult.setText("Creando Objeto JSON");
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Method.POST,
+       JsonObjectRequest jsonObjReq = new JsonObjectRequest(Method.POST,
                 urlJsonLogin, null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -175,7 +172,7 @@ public class MainActivity extends Activity {
         });
         //Adding request to request queque
         MainActivity.getInstance().addToRequestQueue(jsonObjReq);
-        urlJsonLogin = "http://www.ingvaldiviavivar.com/api/login";
+        urlJsonLogin = "http://gestorcontable.ingvaldiviavivar.com/api/login";
         textResult.setTextColor(Color.BLACK);
     }
 }
